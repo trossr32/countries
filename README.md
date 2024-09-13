@@ -11,6 +11,9 @@ Uses the following sources for data:
 Currently only contains currency codes, but currency symbols could potentially be retrieved from https://github.com/RubyMoney/money (although this may almost be too comprehensive).
 
 ## Usage
+
+### PowerShell
+
 ```powershell
 $repoLocation = "[Repo location]"
 $publishLocation = "C:/Temp/countries-parser/publish"
@@ -24,6 +27,8 @@ Invoke-Expression "$exe run -o $jobOutputLocation"
 
 Invoke-Item $jobOutputLocation
 ```
+
+### Bash
 
 ```bash
 repoLocation="/[Repo location]"
