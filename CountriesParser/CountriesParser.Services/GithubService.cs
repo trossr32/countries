@@ -28,6 +28,10 @@ public class GithubService(ILogger<GithubService> logger)
 
         var countriesRepo = Path.Combine(options.RunDirectory, GithubRepo.Countries.RepoDataPath());
 
+        var translations = await File.ReadAllTextAsync(Path.Combine(options.RunDirectory, GithubRepo.Countries.RepoDataPath("translations"), "countries-en.json"), token);
+
+        var countryNames = JsonSerializer.Deserialize<Dictionary<string, string>>(translations)!;
+
         var files = Directory.EnumerateFiles(countriesRepo, "*.json");
 
         var countries = new List<Country>();
@@ -38,6 +42,8 @@ public class GithubService(ILogger<GithubService> logger)
 
             if (country is not null)
             {
+                country.Country.Name = countryNames[country.Country.Alpha2];
+
                 countries.Add(country.Country);
 
                 continue;

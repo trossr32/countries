@@ -117,12 +117,13 @@ public static class EnumExtensions
     /// Get the data path for a GithubRepo enum member
     /// </summary>
     /// <param name="repo"></param>
+    /// <param name="dataSubDirectory"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static string RepoDataPath(this GithubRepo repo) =>
+    public static string RepoDataPath(this GithubRepo repo, string? dataSubDirectory = null) =>
         repo switch
         {
-            GithubRepo.Countries => Path.Combine(repo.RepoOutputPath(), "countries-data-json-master", "data", "countries"),
+            GithubRepo.Countries => Path.Combine(repo.RepoOutputPath(), "countries-data-json-master", "data", dataSubDirectory ?? "countries"),
             GithubRepo.CountryFlags => Path.Combine(repo.RepoOutputPath(), "country-flags-main"),
             _ => throw new ArgumentOutOfRangeException(nameof(repo), repo, null)
         };

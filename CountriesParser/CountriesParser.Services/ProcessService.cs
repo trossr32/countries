@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CountriesParser.Services;
 
-public class ProcessService(ILogger<ProcessService> logger, GithubService githubSvc, WorldAtlasService worldAtlasSvc)
+public class ProcessService(ILogger<ProcessService> logger, GithubService githubSvc)
 {
     /// <summary>
     /// Main process
@@ -28,9 +28,6 @@ public class ProcessService(ILogger<ProcessService> logger, GithubService github
 
             return;
         }
-
-        // Add country names
-        countries = await worldAtlasSvc.AddCountryNameToCountries(countries, token);
 
         logger.LogInformation("Found {Count} countries", countries.Count);
         logger.LogInformation("Run directory: {RunDir}", options.RunDirectory);
@@ -88,7 +85,7 @@ public class ProcessService(ILogger<ProcessService> logger, GithubService github
     {
         var outFile = Path.Combine(options.RunDirectory, "countries.json");
 
-        await File.WriteAllTextAsync(outFile, JsonSerializer.Serialize(countries), token);
+        await File.WriteAllTextAsync(outFile, JsonSerializer.Serialize(countries, options: new() { WriteIndented = true}), token);
 
         logger.LogInformation("Deserialized countries written to {OutFile}", outFile);
     }
@@ -115,6 +112,12 @@ public class ProcessService(ILogger<ProcessService> logger, GithubService github
                            `IsoAlpha2` varchar(2) NOT NULL,
                            `IsoAlpha3` varchar(3) NOT NULL,
                            `UnCode` varchar(3) NOT NULL,
+                           `IsdCode` varchar(3) NOT NULL,
+                           `CurrencyCode` varchar(3) NOT NULL,
+                           `UsesPostcode` tinyint(1) NOT NULL,
+                           `PostcodeFormat` varchar(300) NULL,
+                           `ImagePngCdnPath` varchar(200) NOT NULL,
+                           `ImageSvgCdnPath` varchar(200) NOT NULL,
                            `CreatedOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                            `ModifiedOn` datetime NULL ON UPDATE CURRENT_TIMESTAMP,
                            PRIMARY KEY (`Id`)
@@ -126,7 +129,7 @@ public class ProcessService(ILogger<ProcessService> logger, GithubService github
         foreach (var country in countries)
         {
             sql.AppendLine($"""
-                            INSERT INTO `Country` (`Name`, `IsoShortName`, `IsoLongName`, `IsoAlpha2`, `IsoAlpha3`, `IsoNumeric`, `IsdCode`, `CurrencyCode`, `UsesPostcode`, `PostcodeFormat`, `ImagePngCdnPath`, `ImageSvgCdnPath`) 
+                            INSERT INTO `Country` (`Name`, `IsoShortName`, `IsoLongName`, `IsoAlpha2`, `IsoAlpha3`, `UnCode`, `IsdCode`, `CurrencyCode`, `UsesPostcode`, `PostcodeFormat`, `ImagePngCdnPath`, `ImageSvgCdnPath`) 
                             VALUES ('{country.Name}', '{country.IsoShortName}', '{country.IsoLongName}', '{country.Alpha2}', '{country.Alpha3}', '{country.Number}', '{country.CountryCode}', '{country.CurrencyCode}', '{country.PostalCode}', '{country.PostalCodeFormat}', 'country-flag/{country.Alpha2.ToLower()}.png', 'country-flag/{country.Alpha2.ToLower()}.svg');
                             
                             """);

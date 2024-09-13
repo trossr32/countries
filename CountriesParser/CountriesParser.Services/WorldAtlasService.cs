@@ -12,7 +12,9 @@ public class WorldAtlasService(ILogger<WorldAtlasService> logger)
     /// Add country name to countries from WorldAtlas
     /// </summary>
     /// <param name="countries"></param>
+    /// <param name="token"></param>
     /// <returns></returns>
+    [Obsolete("This data can be derived from the github countries repo, but leaving in case required later")]
     public async Task<List<Country>> AddCountryNameToCountries(List<Country> countries, CancellationToken token)
     {
         // Download the HTML content of the page
