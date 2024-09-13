@@ -55,13 +55,14 @@ public class GithubServiceTests
             var countryData = await _githubSvc.DeserializeCountryModel(file, CancellationToken.None);
 
             Assert.That(countryData, Is.Not.Null);
+            Assert.That(countryData.Country.Name, Is.Not.Empty);
 
             _countries.Add(countryData);
         }
     }
 
     [Test, Order(30)]
-    public void CountryFlags_ExistForAllCountries()
+    public void CountryFlags_ShouldExistForAllCountries()
     {
         var countryFlagsRepo = Path.Combine(_options.RunDirectory, GithubRepo.CountryFlags.RepoDataPath());
 
