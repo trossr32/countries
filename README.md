@@ -15,9 +15,10 @@ Currently only contains currency codes, but currency symbols could potentially b
 $repoLocation = "[Repo location]"
 $publishLocation = "C:/Temp/countries-parser/publish"
 $jobOutputLocation = "C:/Temp/countries-parser"
+$project = "$repoLocation/countries/CountriesParser/CountriesParser.Console/CountriesParser.Console.csproj"
 $exe = "$publishLocation/CountriesParser.Console.exe"
 
-dotnet publish "$repoLocation/countries/CountriesParser/CountriesParser.Console/CountriesParser.Console.csproj" -c Release -r win-x64 -o $publishLocation -p:PublishSingleFile=True
+dotnet publish $project -c Release -r win-x64 -o $publishLocation -p:PublishSingleFile=True
 
 Invoke-Expression "$exe run -o $jobOutputLocation"
 
@@ -28,9 +29,10 @@ Invoke-Item $jobOutputLocation
 repoLocation="/[Repo location]"
 publishLocation="/tmp/countries-parser/publish"
 jobOutputLocation="/tmp/countries-parser"
+project="$repoLocation/countries/CountriesParser/CountriesParser.Console/CountriesParser.Console.csproj"
 exe="$publishLocation/CountriesParser.Console"
 
-dotnet publish "$repoLocation/countries/CountriesParser/CountriesParser.Console/CountriesParser.Console.csproj" -c Release -r linux-x64 -o $publishLocation -p:PublishSingleFile=True
+dotnet publish $project -c Release -r linux-x64 -o $publishLocation -p:PublishSingleFile=True
 
 $exe run -o $jobOutputLocation
 ```
