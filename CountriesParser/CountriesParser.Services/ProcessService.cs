@@ -118,6 +118,7 @@ public class ProcessService(ILogger<ProcessService> logger, GithubService github
                            `PostcodeFormat` varchar(300) NULL,
                            `ImagePngCdnPath` varchar(200) NOT NULL,
                            `ImageSvgCdnPath` varchar(200) NOT NULL,
+                           `Order` int(11) NOT NULL DEFAULT '10',
                            `CreatedOn` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                            `ModifiedOn` datetime NULL ON UPDATE CURRENT_TIMESTAMP,
                            PRIMARY KEY (`Id`)
@@ -128,9 +129,11 @@ public class ProcessService(ILogger<ProcessService> logger, GithubService github
 
         foreach (var country in countries)
         {
+            var order = country.Alpha2 == "GB" ? "1" : "10"; // Set UK to be first in the list
+
             sql.AppendLine($"""
-                            INSERT INTO `Country` (`Name`, `IsoShortName`, `IsoLongName`, `IsoAlpha2`, `IsoAlpha3`, `UnCode`, `IsdCode`, `CurrencyCode`, `UsesPostcode`, `PostcodeFormat`, `ImagePngCdnPath`, `ImageSvgCdnPath`) 
-                            VALUES ('{country.Name}', '{country.IsoShortName}', '{country.IsoLongName}', '{country.Alpha2}', '{country.Alpha3}', '{country.Number}', '{country.CountryCode}', '{country.CurrencyCode}', '{country.PostalCode}', '{country.PostalCodeFormat}', 'country-flag/{country.Alpha2.ToLower()}.png', 'country-flag/{country.Alpha2.ToLower()}.svg');
+                            INSERT INTO `Country` (`Name`, `IsoShortName`, `IsoLongName`, `IsoAlpha2`, `IsoAlpha3`, `UnCode`, `IsdCode`, `CurrencyCode`, `UsesPostcode`, `PostcodeFormat`, `Order`, `ImagePngCdnPath`, `ImageSvgCdnPath`) 
+                            VALUES ({country.Name.ToSql()}, {country.IsoShortName.ToSql()}, {country.IsoLongName.ToSql()}, {country.Alpha2.ToSql()}, {country.Alpha3.ToSql()}, {country.Number.ToSql()}, {country.CountryCode.ToSql()}, {country.CurrencyCode.ToSql()}, {country.PostalCode.ToSql()}, {country.PostalCodeFormat.ToSql()}, {order}, 'country-flag/{country.Alpha2.ToLower()}.png', 'country-flag/{country.Alpha2.ToLower()}.svg');
                             
                             """);
         }
